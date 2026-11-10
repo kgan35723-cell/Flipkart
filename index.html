@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flipkart Premium Store</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: #f1f3f6;
+            color: #212121;
+        }
+        header {
+            background-color: #2874f0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 10px 16px;
+            box-shadow: 0 2px 4px 0 rgba(0,0,0,0.08);
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            color: #fff;
+            font-size: 20px;
+            font-weight: bold;
+            font-style: italic;
+        }
+        .search-box {
+            flex-grow: 1;
+            max-width: 500px;
+            margin: 0 12px;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 2px;
+            outline: none;
+        }
+        .cart-btn {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+        }
+        .products-grid {
+            max-width: 1200px;
+            margin: 12px auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            padding: 0 8px;
+        }
+        @media (min-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 16px;
+                padding: 0 16px;
+            }
+        }
+        .product-card {
+            background: #fff;
+            border-radius: 4px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            border: 1px solid #f0f0f0;
+        }
+        .product-img {
+            width: 100%;
+            height: 170px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+        .brand-name {
+            font-size: 11px;
+            color: #878787;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        .product-name {
+            font-size: 13px;
+            font-weight: 500;
+            line-height: 1.3;
+            margin-bottom: 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: #212121;
+        }
+        .rating-badge {
+            background: #388e3c;
+            color: #fff;
+            width: fit-content;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            margin-bottom: 6px;
+        }
+        .price-container {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            margin-top: auto;
+            flex-wrap: wrap;
+        }
+        .current-price {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .old-price {
+            font-size: 12px;
+            color: #878787;
+            text-decoration: line-through;
+        }
+        .discount {
+            font-size: 12px;
+            color: #388e3c;
+            font-weight: bold;
+        }
+
+        /* Full Screen Screens */
+        .screen-view {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            z-index: 1000;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .screen-header {
+            background: #fff;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .screen-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #212121;
+        }
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: #212121;
+        }
+        .screen-body {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 80px;
+            background: #f1f3f6;
+        }
+        .detail-section {
+            background: #fff;
+            padding: 14px 16px;
+            margin-bottom: 8px;
+        }
+        .detail-image-box {
+            background: #fff;
+            text-align: center;
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .detail-img {
+            max-width: 100%;
+            height: 280px;
+            object-fit: contain;
+        }
+        .detail-title {
+            font-size: 15px;
+            font-weight: 500;
+            line-height: 1.4;
+            color: #212121;
+            margin-bottom: 8px;
+        }
+        .badge-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .ratings-count {
+            font-size: 12px;
+            color: #878787;
+        }
+        .special-price-tag {
+            font-size: 12px;
+            color: #388e3c;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+        .detail-cur-price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #212121;
+        }
+        .detail-old-price {
+            font-size: 14px;
+            color: #878787;
+            text-decoration: line-through;
+        }
+        .detail-discount {
+            font-size: 14px;
+            color: #388e3c;
+            font-weight: bold;
+        }
+        .section-header-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #212121;
+            margin-bottom: 10px;
+        }
+        .variant-box {
+            display: inline-block;
+            border: 1px solid #2874f0;
+            background: #f5f8ff;
+            color: #2874f0;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        .spec-item {
+            display: flex;
+            gap: 8px;
+            font-size: 13px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .spec-dot {
+            color: #2874f0;
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        /* Sticky Bottom Bar */
+        .bottom-action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 56px;
+            background: #fff;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            z-index: 1001;
+        }
+        .cart-icon-btn {
+            width: 60px;
+            height: 56px;
+            background: #fff;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #2874f0;
+            cursor: pointer;
+            border-right: 1px solid #f0f0f0;
+        }
+        .buy-now-yellow-btn {
+            flex: 1;
+            height: 100%;
+            background: #ffc200;
+            color: #111;
+            border: none;
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            line-height: 1.2;
+        }
+        .buy-now-subprice {
+            font-size: 12px;
+            font-weight: normal;
+            margin-top: 2px;
+        }
+
+        /* Address Form Styles */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: #717478;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d2d5d8;
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+        }
+        .form-group input:focus {
+            border-color: #2874f0;
+        }
+        .submit-btn {
+            width: 100%;
+            background: #2874f0;
+            color: #fff;
+            border: none;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        /* QR Payment View */
+        .qr-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px 16px;
+            text-align: center;
+            margin: 16px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+        .qr-placeholder {
+            width: 220px;
+            height: 220px;
+            margin: 16px auto;
+            border: 2px dashed #2874f0;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #fbfbfb;
+            position: relative;
+        }
+        .qr-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: none;
+        }
+        .qr-amount {
+            font-size: 26px;
+            font-weight: bold;
+            color: #212121;
+            margin-bottom: 4px;
+        }
+        .qr-instruction {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+        .timer-badge {
+            display: inline-block;
+            background: #fff3e0;
+            color: #e65100;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">Flipkart <i>Plus</i></div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search for products, brands and more" onkeyup="searchProducts()">
+            </div>
+            <a href="#" class="cart-btn">&#128722; Cart</a>
+        </div>
+    </header>
+
+    <div class="products-grid" id="productGrid"></div>
+
+    <!-- Product Detail Screen -->
+    <div class="screen-view" id="detailView">
+        <div class="screen-header">
+            <button class="back-btn" onclick="closeScreen('detailView')">&#8592;</button>
+            <span class="screen-title">Product Details</span>
+        </div>
+        <div class="screen-body">
+            <div class="detail-image-box">
+                <img src="" id="dImg" class="detail-img" alt="">
+            </div>
+            <div class="detail-section">
+                <div class="detail-title" id="dTitle"></div>
+                <div class="badge-row">
+                    <div class="rating-badge"><span id="dRating"></span> &#9733;</div>
+                    <span class="ratings-count">12,480 Ratings & 980 Reviews</span>
+                </div>
+                <div class="special-price-tag">Top Discount of the Sale</div>
+                <div class="price-row">
+                    <span class="detail-cur-price" id="dCurPrice"></span>
+                    <span class="detail-old-price" id="dOldPrice"></span>
+                    <span class="detail-discount" id="dDisc"></span>
+                </div>
+            </div>
+            <div class="detail-section">
+                <div class="section-header-title">Storage & RAM Variant</div>
+                <div>
+                    <span class="variant-box">Standard Edition</span>
+                    <span class="variant-box" style="border-color: #ddd; color: #555; background: #fff;">Top Variant</span>
+                </div>
+            </div>
+            <div class="detail-section">
+                <div class="section-header-title">Product Highlights</div>
+                <div id="dSpecs"></div>
+            </div>
+        </div>
+        <div class="bottom-action-bar">
+            <button class="cart-icon-btn" onclick="addToCart()">&#128722;</button>
+            <button class="buy-now-yellow-btn" onclick="openAddressScreen()">
+                <span>Buy now</span>
+                <span class="buy-now-subprice" id="btnPrice"></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Address Details Screen -->
+    <div class="screen-view" id="addressView">
+        <div class="screen-header">
+            <button class="back-btn" onclick="closeScreen('addressView')">&#8592;</button>
+            <span class="screen-title">Add Delivery Address</span>
+        </div>
+        <div class="screen-body">
+            <div class="detail-section" style="margin-top: 8px;">
+                <form id="addressForm" onsubmit="handleAddressSubmit(event)">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="custName" placeholder="e.g. Aasif Khan" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" id="custPhone" placeholder="10-digit mobile number" required pattern="[0-9]{10}">
+                    </div>
+                    <div class="form-group">
+                        <label>Pincode *</label>
+                        <input type="text" id="custPin" placeholder="6-digit pincode" required pattern="[0-9]{6}">
+                    </div>
+                    <div class="form-group">
+                        <label>Flat, House No., Building Name *</label>
+                        <input type="text" id="custHouse" placeholder="House/Flat Details" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Area, Colony, Street, Sector *</label>
+                        <input type="text" id="custArea" placeholder="Area / Locality" required>
+                    </div>
+                    <div class="form-group">
+                        <label>City / District *</label>
+                        <input type="text" id="custCity" placeholder="City" required>
+                    </div>
+                    <div class="form-group">
+                        <label>State *</label>
+                        <input type="text" id="custState" placeholder="State" required>
+                    </div>
+                    <button type="submit" class="submit-btn">Save Address & Proceed</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Direct QR Scanner Payment Screen -->
+    <div class="screen-view" id="qrView">
+        <div class="screen-header">
+            <button class="back-btn" onclick="closeScreen('qrView')">&#8592;</button>
+            <span class="screen-title">Pay via UPI QR</span>
+        </div>
+        <div class="screen-body">
+            <div class="qr-card">
+                <div class="qr-amount" id="qrPriceDisplay">₹0</div>
+                <div class="qr-instruction">Scan the QR code using any UPI App (GPay, PhonePe, Paytm) to complete payment</div>
+                
+                <div class="qr-placeholder" id="qrContainer">
+                    <img id="qrImageTag" src="" alt="Payment QR Code">
+                    <div id="qrPlaceholderText" style="padding: 12px; font-size: 13px; color: #555;">
+                        <span style="font-size: 28px; display: block; margin-bottom: 6px;">📷</span>
+                        <strong>Your QR Code Here</strong><br>
+                        (Insert QR image URL in script)
+                    </div>
+                </div>
+
+                <div class="timer-badge">Session Expires in: 04:59</div>
+
+                <div style="margin-top: 20px; font-size: 12px; color: #878787;">
+                    100% Safe and Secure Payments<br>
+                    Order confirmation will be sent to your phone number.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="phones.js"></script>
+    <script>
+        const grid = document.getElementById('productGrid');
+        let selectedPhone = null;
+
+        // Provide your QR code image link here:
+        const QR_IMAGE_URL = ""; 
+
+        function renderProducts(data) {
+            grid.innerHTML = '';
+            data.forEach(phone => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.onclick = () => openDetailView(phone);
+
+                card.innerHTML = `
+                    <img src="${phone.img}" alt="${phone.name}" class="product-img">
+                    <div class="brand-name">${phone.brand}</div>
+                    <div class="product-name">${phone.name}</div>
+                    <div class="rating-badge">${phone.rating} &#9733;</div>
+                    <div class="price-container">
+                        <span class="current-price">${phone.curPrice}</span>
+                        <span class="old-price">${phone.oldPrice}</span>
+                        <span class="discount">${phone.disc}</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openDetailView(phone) {
+            selectedPhone = phone;
+            document.getElementById('dImg').src = phone.img;
+            document.getElementById('dTitle').innerText = phone.name;
+            document.getElementById('dRating').innerText = phone.rating;
+            document.getElementById('dCurPrice').innerText = phone.curPrice;
+            document.getElementById('dOldPrice').innerText = phone.oldPrice;
+            document.getElementById('dDisc').innerText = phone.disc;
+            document.getElementById('btnPrice').innerText = 'at ' + phone.curPrice;
+
+            const specsContainer = document.getElementById('dSpecs');
+            specsContainer.innerHTML = '';
+            phone.specs.forEach(spec => {
+                const row = document.createElement('div');
+                row.className = 'spec-item';
+                row.innerHTML = `<span class="spec-dot">&#8226;</span><span>${spec}</span>`;
+                specsContainer.appendChild(row);
+            });
+
+            document.getElementById('detailView').style.display = 'flex';
+        }
+
+        function openAddressScreen() {
+            document.getElementById('addressView').style.display = 'flex';
+        }
+
+        function handleAddressSubmit(e) {
+            e.preventDefault();
+            // Transition directly to QR view
+            document.getElementById('qrPriceDisplay').innerText = selectedPhone.curPrice;
+
+            const qrImg = document.getElementById('qrImageTag');
+            const qrText = document.getElementById('qrPlaceholderText');
+            if (QR_IMAGE_URL.trim() !== "") {
+                qrImg.src = QR_IMAGE_URL;
+                qrImg.style.display = 'block';
+                qrText.style.display = 'none';
+            } else {
+                qrImg.style.display = 'none';
+                qrText.style.display = 'block';
+            }
+renderProducts(phonesData);</script></body></html>
+            
